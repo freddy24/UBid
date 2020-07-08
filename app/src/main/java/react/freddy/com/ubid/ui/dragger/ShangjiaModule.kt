@@ -11,13 +11,24 @@ import dagger.Provides
 @Module
 class ShangjiaModule {
 
+    lateinit var restaurants: String
+
+    constructor(restaurants: String){
+        this.restaurants = restaurants
+    }
+
     @Provides
     fun provideBaozi(): BaoZi{
         return BaoZi("豆沙包")
     }
 
     @Provides
-    fun provideNoodle(): Noodle{
-        return Noodle()
+    fun provideNoodle(tongyi: Tongyi): Noodle{
+        return tongyi
+    }
+
+    @Provides
+    fun provideRestaurants(): String{
+        return restaurants
     }
 }
