@@ -1,15 +1,18 @@
 package react.freddy.com.ubid.ui.dragger
 
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
- * data :2020/7/7
+ * data :2020/7/8
  * auth :wjp
  * Description :
  */
-open class Noodle {
+@Singleton
+class TestSingleton {
 
     @Inject
-    constructor()
+    constructor(){
+    }
 
 }

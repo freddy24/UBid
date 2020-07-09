@@ -19,8 +19,14 @@ class ZhaiNan {
     @Inject
     constructor()
 
+    @Inject
+    lateinit var f: String
+
     fun eat(): String{
         val sb: StringBuilder = StringBuilder()
+        sb.append("我从 ")
+        sb.append(f.toString())
+        sb.append("订的外卖")
         sb.append("我吃的是:")
         sb.append(baoZi.toString())
         sb.append(" ")
