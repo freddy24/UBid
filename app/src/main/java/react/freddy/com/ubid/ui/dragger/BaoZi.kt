@@ -12,11 +12,10 @@ class BaoZi {
     var name: String = ""
 
     @Inject
-    constructor(name: String){
-        this.name = name
+    constructor(){
     }
 
     override fun toString(): String {
-        return name
+        return "小笼包"
     }
 }

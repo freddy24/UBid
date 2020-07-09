@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import react.freddy.com.ubid.R
@@ -69,6 +70,10 @@ class HomeFragment : Fragment() {
 
         root.button_test4.setOnClickListener { it ->
             Snackbar.make(it, "singlton1 code = ${testSingleton1.hashCode()} and sington2 code = ${testSingleton2.hashCode()}", Snackbar.LENGTH_SHORT).show()
+        }
+
+        root.button_next.setOnClickListener { it ->
+            findNavController().navigate(R.id.dagger_test_fragment)
         }
         return root
     }
