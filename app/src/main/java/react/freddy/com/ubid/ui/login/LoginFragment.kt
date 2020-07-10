@@ -17,8 +17,11 @@ import android.widget.ProgressBar
 import android.widget.Toast
 
 import react.freddy.com.ubid.R
+import react.freddy.com.ubid.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
+
+    private lateinit var binding: FragmentLoginBinding
 
     private lateinit var loginViewModel: LoginViewModel
 
@@ -27,7 +30,9 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
