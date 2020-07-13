@@ -71,4 +71,19 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.4.1'
     //log for android
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    //retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit-mock:2.3.0'
+    //room
+    implementation 'androidx.room:room-runtime:2.2.3'
+    kapt 'androidx.room:room-compiler:2.2.3'
+    //lifecycle
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.2.0'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
+    //work
+    implementation "androidx.work:work-runtime-ktx:2.1.0"
+
 }

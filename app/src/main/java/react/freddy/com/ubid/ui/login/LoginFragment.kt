@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 
 import react.freddy.com.ubid.R
 import react.freddy.com.ubid.databinding.FragmentLoginBinding
@@ -45,7 +46,7 @@ class LoginFragment : Fragment() {
         val loginButton = view.findViewById<Button>(R.id.login)
         val loadingProgressBar = view.findViewById<ProgressBar>(R.id.loading)
 
-        loginViewModel.loginFormState.observe(this,
+        loginViewModel.loginFormState.observe(viewLifecycleOwner,
             Observer { loginFormState ->
                 if (loginFormState == null) {
                     return@Observer
@@ -59,17 +60,7 @@ class LoginFragment : Fragment() {
                 }
             })
 
-        loginViewModel.loginResult.observe(this,
-            Observer { loginResult ->
-                loginResult ?: return@Observer
-                loadingProgressBar.visibility = View.GONE
-                loginResult.error?.let {
-                    showLoginFailed(it)
-                }
-                loginResult.success?.let {
-                    updateUiWithUser(it)
-                }
-            })
+
 
         val afterTextChangedListener = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -88,24 +79,21 @@ class LoginFragment : Fragment() {
             }
         }
         usernameEditText.addTextChangedListener(afterTextChangedListener)
-        passwordEditText.addTextChangedListener(afterTextChangedListener)
-        passwordEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loginViewModel.login(
-                    usernameEditText.text.toString(),
-                    passwordEditText.text.toString()
-                )
-            }
-            false
-        }
+
 
         loginButton.setOnClickListener {
             loadingProgressBar.visibility = View.VISIBLE
-            loginViewModel.login(
+            loginViewModel.setId(
                 usernameEditText.text.toString(),
                 passwordEditText.text.toString()
             )
         }
+
+        loginViewModel.loginfo.observe(viewLifecycleOwner, Observer { loginInfo ->
+            if (loginInfo?.data != null){
+                Snackbar.make(binding.root, loginInfo.data.toString(), Snackbar.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {

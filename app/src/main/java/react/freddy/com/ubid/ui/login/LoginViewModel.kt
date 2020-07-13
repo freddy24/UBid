@@ -4,10 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Patterns
-import react.freddy.com.ubid.data.LoginRepository
+import androidx.lifecycle.switchMap
 import react.freddy.com.ubid.data.Result
 
 import react.freddy.com.ubid.R
+import react.freddy.com.ubid.repository.LoginRepository
+import react.freddy.com.ubid.util.AbsentLiveData
+import react.freddy.com.ubid.vo.LoginInfo
+import react.freddy.com.ubid.vo.Resource
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
@@ -17,17 +21,6 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult> = _loginResult
 
-    fun login(username: String, password: String) {
-        // can be launched in a separate asynchronous job
-        val result = loginRepository.login(username, password)
-
-        if (result is Result.Success) {
-            _loginResult.value =
-                LoginResult(success = LoggedInUserView(displayName = result.data.displayName))
-        } else {
-            _loginResult.value = LoginResult(error = R.string.login_failed)
-        }
-    }
 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
@@ -51,5 +44,32 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 5
+    }
+
+    private val _userId: MutableLiveData<UserId> = MutableLiveData()
+    val userId: LiveData<UserId>
+        get() = _userId
+
+    val loginfo: LiveData<Resource<LoginInfo>> = _userId.switchMap{ input ->
+        input.ifExist { account, password -> loginRepository.login(account, password)}
+    }
+
+    fun setId(account: String, password: String){
+        val update = UserId(account, password)
+        if (_userId.value == update){
+            return
+        }
+        _userId.value = update
+    }
+
+    data class UserId(val account: String, val password: String){
+
+        fun <T> ifExist(u: (String, String) -> LiveData<T>): LiveData<T>{
+            return if (account.isBlank() || password.isBlank()){
+                 AbsentLiveData.create()
+            }else{
+                u(account, password)
+            }
+        }
     }
 }
