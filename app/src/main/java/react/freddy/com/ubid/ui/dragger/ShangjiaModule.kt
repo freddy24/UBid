@@ -19,7 +19,7 @@ class ShangjiaModule {
 
     @Provides
     fun provideBaozi(): BaoZi{
-        return BaoZi("豆沙包")
+        return BaoZi()
     }
 
     @Provides

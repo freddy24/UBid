@@ -3,13 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/loadingFragment">
+
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="react.freddy.com.ubid.ui.loading.LoadingFragment"
+        android:label="loading_fragment"
+        tools:layout="@layout/loading_fragment">
+
+        <!-- popUpTo 理解为返回的destination  -->
+        <!-- popUpToInclusive 理解为返回是不是also remove fragment  -->
+        <action
+            android:id="@+id/action_loadingFragment_to_nav_home"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/loadingFragment"
+            app:popUpToInclusive="true"/>
+
+    </fragment>
 
     <fragment
         android:id="@+id/nav_home"
         android:name="react.freddy.com.ubid.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+
+        <action
+            android:id="@+id/action_nav_home_to_dagger_test_fragment"
+            app:destination="@id/dagger_test_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_home_to_login_fragment"
+            app:destination="@id/login_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_gallery"
@@ -22,4 +50,15 @@
         android:name="react.freddy.com.ubid.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment android:id="@+id/dagger_test_fragment"
+        android:name="react.freddy.com.ubid.ui.test.DaggerTestFragment"
+        android:label="Dagger Test"
+        tools:layout="@layout/fragment_dagger_test"/>
+
+    <fragment android:id="@+id/login_fragment"
+        android:name="react.freddy.com.ubid.ui.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login"/>
+
 </navigation>
