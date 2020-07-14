@@ -5,8 +5,10 @@ import react.freddy.com.ubid.AppExecutors
 import react.freddy.com.ubid.api.ApiResponse
 import react.freddy.com.ubid.api.UBidService
 import react.freddy.com.ubid.db.LoginInfoDao
+import react.freddy.com.ubid.vo.EFSBaseResponse
 import react.freddy.com.ubid.vo.LoginInfo
 import react.freddy.com.ubid.vo.Resource
+import java.util.*
 
 /**
  * data :2020/7/13
@@ -20,22 +22,24 @@ class LoginRepository(
 ) {
 
     fun login(account: String, password: String): LiveData<Resource<LoginInfo>>{
-        return object : NetworkBoundResource<LoginInfo, LoginInfo>(appExecutors){
-            override fun saveCallResult(item: LoginInfo) {
-                loginInfoDao.insert(item)
+        return object : NetworkBoundResource<LoginInfo, EFSBaseResponse<LoginInfo>>(appExecutors){
+            override fun saveCallResult(item: EFSBaseResponse<LoginInfo>) {
+                if (item.data != null){
+                    loginInfoDao.insert(item.data)
+                }
             }
 
             override fun shouldFetch(data: LoginInfo?): Boolean {
-                return data == null
+                return true
             }
 
             override fun loadFromDb(): LiveData<LoginInfo> {
                 return loginInfoDao.findByUserAccount(account)
             }
 
-            override fun createCall(): LiveData<ApiResponse<LoginInfo>> {
-                val loginData = mutableMapOf<String, Any>("account" to account, "password" to password)
-                return uBidService.login(loginData)
+            override fun createCall(): LiveData<ApiResponse<EFSBaseResponse<LoginInfo>>> {
+                val params = hashMapOf("account" to account, "password" to password)
+                return uBidService.login(param = params)
             }
 
         }.asLiveData()
@@ -46,7 +50,7 @@ class LoginRepository(
         @Volatile
         private var instance: LoginRepository? = null
 
-        private fun getInstance(appExecutors: AppExecutors, loginInfoDao: LoginInfoDao, uBidService: UBidService): LoginRepository{
+        fun getInstance(appExecutors: AppExecutors, loginInfoDao: LoginInfoDao, uBidService: UBidService): LoginRepository{
             return instance ?: synchronized(this){
                 instance ?: LoginRepository(appExecutors, loginInfoDao, uBidService).also {
                     instance = it

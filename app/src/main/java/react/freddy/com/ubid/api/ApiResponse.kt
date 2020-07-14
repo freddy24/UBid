@@ -1,5 +1,6 @@
 package react.freddy.com.ubid.api
 
+import react.freddy.com.ubid.vo.EFSBaseResponse
 import retrofit2.Response
 
 /**
@@ -15,12 +16,20 @@ sealed class ApiResponse<T> {
         }
 
         fun <T> create(response: Response<T>): ApiResponse<T>{
-            return if (response.isSuccessful){
+            if (response.isSuccessful){
                 val body = response.body()
                  if (body == null || response.code() == 204){
-                    ApiEmptyResponse()
+                    return ApiEmptyResponse()
                 }else{
-                    ApiSuccessResponse(body = body)
+                     val result =  body as EFSBaseResponse<T>
+                     val success = result.success
+                     val data = result.data
+                     if (success && data != null){
+                         return ApiSuccessResponse(body = data)
+                     }else{
+                         val err = result.err
+                         return ApiErrorResponse(err ?: "unknow error")
+                     }
                 }
             }else{
                 val msg = response.errorBody()?.toString()
@@ -29,7 +38,7 @@ sealed class ApiResponse<T> {
                 }else{
                     msg
                 }
-                ApiErrorResponse(errorMsg ?: "unknown error")
+                return ApiErrorResponse(errorMsg ?: "unknown error")
             }
         }
     }

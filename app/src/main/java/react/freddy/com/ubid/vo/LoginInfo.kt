@@ -3,7 +3,6 @@ package react.freddy.com.ubid.vo
 import androidx.room.Embedded
 import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
-import retrofit2.http.Field
 
 /**
  * data :2020/7/13
@@ -11,9 +10,11 @@ import retrofit2.http.Field
  * Description :
  */
 @Entity(
-
+    primaryKeys = ["id"]
 )
 data class LoginInfo (
+    @field:SerializedName("id")
+    val id: Int,
     @field:SerializedName("token")
     val token: String,
     @field:SerializedName("fromBoundDevice")

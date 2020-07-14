@@ -15,16 +15,21 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 
 import react.freddy.com.ubid.R
 import react.freddy.com.ubid.databinding.FragmentLoginBinding
+import react.freddy.com.ubid.util.InjectorUtils
+import react.freddy.com.ubid.vo.Status
 
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
 
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by viewModels {
+        InjectorUtils.provideLoginRepositoryFactory(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +43,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
 
         val usernameEditText = view.findViewById<EditText>(R.id.username)
         val passwordEditText = view.findViewById<EditText>(R.id.password)
@@ -59,7 +62,6 @@ class LoginFragment : Fragment() {
                     passwordEditText.error = getString(it)
                 }
             })
-
 
 
         val afterTextChangedListener = object : TextWatcher {
@@ -87,13 +89,29 @@ class LoginFragment : Fragment() {
                 usernameEditText.text.toString(),
                 passwordEditText.text.toString()
             )
+//            loginViewModel.login(
+//                usernameEditText.text.toString(),
+//                passwordEditText.text.toString()
+//            )
         }
 
         loginViewModel.loginfo.observe(viewLifecycleOwner, Observer { loginInfo ->
-            if (loginInfo?.data != null){
-                Snackbar.make(binding.root, loginInfo.data.toString(), Snackbar.LENGTH_LONG).show()
+            if (loginInfo.status == Status.ERROR ) {
+                Snackbar.make(binding.root, loginInfo.message.toString(), Snackbar.LENGTH_LONG).show()
             }
         })
+
+        loginViewModel.loginResult.observe(viewLifecycleOwner,
+            Observer { loginResult ->
+                loginResult ?: return@Observer
+                loadingProgressBar.visibility = View.GONE
+                loginResult.error?.let {
+                    showLoginFailed(it)
+                }
+                loginResult.success?.let {
+                    updateUiWithUser(it)
+                }
+            })
     }
 
     private fun updateUiWithUser(model: LoggedInUserView) {
