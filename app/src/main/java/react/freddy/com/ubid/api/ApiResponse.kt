@@ -25,7 +25,7 @@ sealed class ApiResponse<T> {
                      val success = result.success
                      val data = result.data
                      if (success && data != null){
-                         return ApiSuccessResponse(body = data)
+                         return ApiSuccessResponse(body = body)
                      }else{
                          val err = result.err
                          return ApiErrorResponse(err ?: "unknow error")
