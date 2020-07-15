@@ -1,6 +1,7 @@
 package react.freddy.com.ubid
 
 import android.app.Application
+import com.tencent.mmkv.MMKV
 import timber.log.Timber
 
 /**
@@ -18,6 +19,9 @@ class UBidApp : Application() {
         }else{
             Timber.plant(CrashReportingTree)
         }
+
+        val root = MMKV.initialize(this)
+        Timber.i(root)
     }
 
 

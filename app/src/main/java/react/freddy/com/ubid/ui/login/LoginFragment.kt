@@ -16,10 +16,14 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.tencent.mmkv.MMKV
+import react.freddy.com.ubid.MainActivity
 
 import react.freddy.com.ubid.R
 import react.freddy.com.ubid.databinding.FragmentLoginBinding
+import react.freddy.com.ubid.ui.ShareViewModel
 import react.freddy.com.ubid.util.InjectorUtils
 import react.freddy.com.ubid.vo.Status
 
@@ -29,6 +33,10 @@ class LoginFragment : Fragment() {
 
     private val loginViewModel: LoginViewModel by viewModels {
         InjectorUtils.provideLoginRepositoryFactory(requireContext())
+    }
+
+    private val shareViewModel: ShareViewModel by viewModels {
+        InjectorUtils.provideShareViewModelFactory(requireContext())
     }
 
     override fun onCreateView(
@@ -97,7 +105,17 @@ class LoginFragment : Fragment() {
 
         loginViewModel.loginfo.observe(viewLifecycleOwner, Observer { loginInfo ->
             if (loginInfo.status == Status.ERROR ) {
+                loadingProgressBar.visibility = View.GONE
                 Snackbar.make(binding.root, loginInfo.message.toString(), Snackbar.LENGTH_LONG).show()
+            }else if (loginInfo.status == Status.SUCCESS){
+                loadingProgressBar.visibility = View.GONE
+
+                updateHeaderView(loginInfo.data!!.user.account, loginInfo.data.person.name)
+
+                val mmkv = MMKV.defaultMMKV()
+                mmkv.encode("account", loginInfo.data.user.account)
+
+                findNavController().navigateUp()
             }
         })
 
@@ -124,5 +142,9 @@ class LoginFragment : Fragment() {
     private fun showLoginFailed(@StringRes errorString: Int) {
         val appContext = context?.applicationContext ?: return
         Toast.makeText(appContext, errorString, Toast.LENGTH_LONG).show()
+    }
+
+    private fun updateHeaderView(account: String, name: String){
+        (requireActivity() as MainActivity).updateHeaderView(account, name)
     }
 }

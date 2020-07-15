@@ -5,6 +5,7 @@ import react.freddy.com.ubid.AppExecutors
 import react.freddy.com.ubid.api.AppRetrofit
 import react.freddy.com.ubid.db.AppDatabase
 import react.freddy.com.ubid.repository.LoginRepository
+import react.freddy.com.ubid.ui.ShareViewModelFactory
 import react.freddy.com.ubid.ui.login.LoginViewModelFactory
 
 /**
@@ -22,5 +23,9 @@ object InjectorUtils {
 
     fun provideLoginRepositoryFactory(context: Context) : LoginViewModelFactory{
         return LoginViewModelFactory(getLoginRepository(context))
+    }
+
+    fun provideShareViewModelFactory(context: Context) : ShareViewModelFactory{
+        return ShareViewModelFactory(getLoginRepository(context))
     }
 }

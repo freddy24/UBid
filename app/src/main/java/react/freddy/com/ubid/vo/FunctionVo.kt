@@ -17,7 +17,6 @@ data class FunctionVo(
     val funcUrl: String?,
     val parentId: Int = 0,
     val createTime: Date,
-    val orderId: Int,
-    val s: String
+    val orderId: Int
 ) {
 }

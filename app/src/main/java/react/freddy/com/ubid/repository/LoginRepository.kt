@@ -49,6 +49,8 @@ class LoginRepository(
         }.asLiveData()
     }
 
+    fun getLoginInfo(account: String) = loginInfoDao.findByUserAccount(account)
+
     companion object{
 
         @Volatile

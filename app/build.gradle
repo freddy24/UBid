@@ -88,5 +88,7 @@ dependencies {
     kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
     //work
     implementation "androidx.work:work-runtime-ktx:2.1.0"
+    //mmkv 数据存储
+    implementation 'com.tencent:mmkv-static:1.2.1'
 
 }
