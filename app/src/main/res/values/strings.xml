@@ -22,4 +22,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+
+    <string name="un_bid">未竞标</string>
+    <string name="biding">竞标中</string>
 </resources>

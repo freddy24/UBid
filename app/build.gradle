@@ -90,5 +90,8 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:2.1.0"
     //mmkv 数据存储
     implementation 'com.tencent:mmkv-static:1.2.1'
+    //view pager
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "com.google.android.material:material:1.1.0-alpha09"
 
 }
