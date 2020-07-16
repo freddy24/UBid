@@ -14,3 +14,5 @@ const val BASE_EFS_URL_SIT = "https://efssit.saic-finance.com/"
 const val BASE_EFS_URL_UAT = "https://efsu.saic-finance.com/"
 const val BASE_EFS_URL_PRO = "https://efsmobile.saicfinance.com/"
 var BASE_EFS_URL = BASE_EFS_URL_SIT
+
+const val BASE_ITMGR_URL = "https://itmgr.saicfinance.com/"

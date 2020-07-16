@@ -5,6 +5,8 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.activity.viewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -17,15 +19,24 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import react.freddy.com.ubid.ui.ShareViewModel
 import react.freddy.com.ubid.ui.dragger.ZhaiNan
+import react.freddy.com.ubid.util.InjectorUtils
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    var drawerLayout: DrawerLayout? = null
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navView: NavigationView
+
+    private val shareViewModel: ShareViewModel by viewModels{
+        InjectorUtils.provideShareViewModelFactory(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                     .setAction("Action", null).show()
         }
         drawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
+        navView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -52,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         val headerIcon: ImageView = navView.getHeaderView(0).findViewById(R.id.header_icon)
         headerIcon.setOnClickListener {
             Timber.i("header icon click")
-            drawerLayout?.closeDrawer(GravityCompat.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
             navController.navigate(R.id.login_fragment)
         }
 
@@ -61,6 +72,11 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(navView, p0.title, Snackbar.LENGTH_SHORT).show()
             true
         }
+
+        subscribeUi()
+    }
+
+    private fun subscribeUi(){
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -80,6 +96,14 @@ class MainActivity : AppCompatActivity() {
         }else{
             DrawerLayout.LOCK_MODE_LOCKED_CLOSED
         }
-        drawerLayout?.setDrawerLockMode(lockMode)
+        drawerLayout.setDrawerLockMode(lockMode)
+    }
+
+    fun updateHeaderView(account: String, name: String){
+        val headerTitle: TextView = navView.getHeaderView(0).findViewById(R.id.header_title)
+        headerTitle.text = account
+
+        val subHeaderTitle: TextView = navView.getHeaderView(0).findViewById(R.id.header_subtitle)
+        subHeaderTitle.text = name
     }
 }

@@ -20,12 +20,19 @@ data class LoginInfo (
     @field:SerializedName("fromBoundDevice")
     val fromBoundDevice: Boolean,
     @field:Embedded(prefix = "user_")
-    val user: User
+    val user: User,
+    @field:Embedded(prefix = "person_")
+    val person: Person
 ){
     data class User(
         @field:SerializedName("userId")
         val userId: Int,
         @field:SerializedName("account")
         val account: String
+    )
+
+    data class Person(
+        @field:SerializedName("name")
+        val name: String
     )
 }

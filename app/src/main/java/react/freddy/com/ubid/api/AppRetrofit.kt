@@ -2,7 +2,7 @@ package react.freddy.com.ubid.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import react.freddy.com.ubid.data.BASE_EFS_URL
+import react.freddy.com.ubid.data.BASE_ITMGR_URL
 import react.freddy.com.ubid.util.LiveDataCallAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,7 +17,7 @@ class AppRetrofit {
     fun provideUBidService(): UBidService{
         return Retrofit.Builder()
             .client(initBuilder().build())
-            .baseUrl(BASE_EFS_URL)
+            .baseUrl(BASE_ITMGR_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .build()

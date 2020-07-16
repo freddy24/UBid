@@ -4,77 +4,66 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_home.view.*
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.tencent.mmkv.MMKV
+import kotlinx.android.synthetic.main.fragment_view_pager_home.*
+import react.freddy.com.ubid.MainActivity
 import react.freddy.com.ubid.R
-import react.freddy.com.ubid.ui.dragger.*
-import javax.inject.Inject
-import kotlin.properties.Delegates
+import react.freddy.com.ubid.databinding.FragmentViewPagerHomeBinding
+import react.freddy.com.ubid.ui.ShareViewModel
+import react.freddy.com.ubid.util.InjectorUtils
 
 class HomeFragment : Fragment() {
 
-    @Inject
-    lateinit var testSingleton1: TestSingleton
-    @Inject
-    lateinit var testSingleton2: TestSingleton
-
-    private lateinit var homeViewModel: HomeViewModel
+    private val shareViewModel: ShareViewModel by viewModels{
+        InjectorUtils.provideShareViewModelFactory(requireActivity())
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+        val binding = FragmentViewPagerHomeBinding.inflate(inflater, container, false)
+        binding.viewPager.adapter = HomePagerAdapter(this)
+
+        TabLayoutMediator(binding.tabs, binding.viewPager, object :TabLayoutMediator.OnConfigureTabCallback{
+            override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
+                tab.text = getTabTitle(position)
+            }
+        }).attach()
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        shareViewModel.loginInfo.observe(viewLifecycleOwner, Observer { logininfo ->
+            val account = logininfo.user.account
+            val name = logininfo.person.name
+            (requireActivity() as MainActivity).updateHeaderView(account, name)
         })
+    }
 
-        val zhaiNan: ZhaiNan = DaggerQuickPlatform.builder()
-            .shangjiaModule(ShangjiaModule("王小二"))
-            .build()
-            .waimai();
+    override fun onResume() {
+        super.onResume()
 
-//        val waimaipingtai: QuickPlatform = DaggerQuickPlatform.builder()
-//            .shangjiaModule(ShangjiaModule("常德米粉"))
-//            .build()
-//        waimaipingtai.zhuru(this)
-        DaggerActivityComponent.builder()
-            .build()
-            .inject(this)
-
-        DaggerHomeFragmentComponent.builder()
-            .build()
-            .inject(this)
-
-        root.button_test1.setOnClickListener { it ->
-            Snackbar.make(it, zhaiNan.eat(), Snackbar.LENGTH_SHORT).show()
+        val account: String? = MMKV.defaultMMKV().decodeString("account")
+        if(!account.isNullOrBlank()){
+            shareViewModel.setAccountValue(account)
         }
+    }
 
-        root.button_test2.setOnClickListener{ it ->
-            Snackbar.make(it, zhaiNan.eat(), Snackbar.LENGTH_SHORT).show()
+    private fun getTabTitle(position: Int): String? {
+        return when (position) {
+            HOME_PAGE_INDEX_FIRST -> getString(R.string.un_bid)
+            HOME_PAGE_INDEX_SECOND -> getString(R.string.biding)
+            else -> null
         }
-
-        root.button_test3.setOnClickListener{
-            Snackbar.make(it, "test value = ss", Snackbar.LENGTH_SHORT).show()
-        }
-
-        root.button_test4.setOnClickListener { it ->
-            Snackbar.make(it, "singlton1 code = ${testSingleton1.hashCode()} and sington2 code = ${testSingleton2.hashCode()}", Snackbar.LENGTH_SHORT).show()
-        }
-
-        root.button_next.setOnClickListener { it ->
-            findNavController().navigate(R.id.dagger_test_fragment)
-        }
-        return root
     }
 }
