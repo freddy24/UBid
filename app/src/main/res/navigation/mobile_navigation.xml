@@ -60,5 +60,11 @@
         android:name="react.freddy.com.ubid.ui.login.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login"/>
+    <fragment
+        android:id="@+id/unbidFragment"
+        android:name="react.freddy.com.ubid.ui.unbid.UnbidFragment"
+        android:label="UnbidFragment"
+        tools:layout="@layout/unbid_fragment"/>
+
 
 </navigation>

@@ -14,7 +14,7 @@ class AppExecutors(private val diskIO: Executor,
     private val networkIO: Executor,
     private val mainThread: Executor) {
 
-    constructor() : this(
+    private constructor() : this(
         Executors.newSingleThreadExecutor(),
         Executors.newFixedThreadPool(3),
         MainThreadExecutor()

@@ -20,8 +20,6 @@ import react.freddy.com.ubid.util.InjectorUtils
 
 class HomeFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
-
     private val shareViewModel: ShareViewModel by viewModels{
         InjectorUtils.provideShareViewModelFactory(requireActivity())
     }
@@ -31,8 +29,6 @@ class HomeFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val binding = FragmentViewPagerHomeBinding.inflate(inflater, container, false)
         binding.viewPager.adapter = HomePagerAdapter(this)
 

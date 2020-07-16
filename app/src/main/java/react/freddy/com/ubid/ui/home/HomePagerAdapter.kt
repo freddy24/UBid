@@ -2,8 +2,10 @@ package react.freddy.com.ubid.ui.home
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import react.freddy.com.ubid.databinding.UnbidFragmentBinding
 import react.freddy.com.ubid.ui.gallery.GalleryFragment
 import react.freddy.com.ubid.ui.slideshow.SlideshowFragment
+import react.freddy.com.ubid.ui.unbid.UnbidFragment
 import java.lang.IndexOutOfBoundsException
 
 /**
@@ -17,7 +19,7 @@ const val HOME_PAGE_INDEX_SECOND = 1
 class HomePagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment){
 
     private val tabFragmentsCreators: Map<Int, Fragment> = mapOf(
-        HOME_PAGE_INDEX_FIRST to GalleryFragment(),
+        HOME_PAGE_INDEX_FIRST to UnbidFragment(),
         HOME_PAGE_INDEX_SECOND to SlideshowFragment()
     )
 

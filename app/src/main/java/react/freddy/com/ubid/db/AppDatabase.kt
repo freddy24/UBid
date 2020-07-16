@@ -8,6 +8,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import react.freddy.com.ubid.data.DATABASE_NAME
+import react.freddy.com.ubid.vo.EpicSearchResult
+import react.freddy.com.ubid.vo.EpicVo
 import react.freddy.com.ubid.vo.LoginInfo
 import react.freddy.com.ubid.workers.UBidDatabaseWorker
 
@@ -16,10 +18,12 @@ import react.freddy.com.ubid.workers.UBidDatabaseWorker
  * auth :wjp
  * Description :
  */
-@Database(entities = [LoginInfo::class], version = 1, exportSchema = false)
+@Database(entities = [LoginInfo::class, EpicVo::class, EpicSearchResult::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
 
     abstract fun loginInfoDao(): LoginInfoDao
+
+    abstract fun epicsExDao(): EpicsExDao
 
     companion object{
 

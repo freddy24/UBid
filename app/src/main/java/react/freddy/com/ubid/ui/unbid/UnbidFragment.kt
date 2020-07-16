@@ -1,32 +1,42 @@
 package react.freddy.com.ubid.ui.unbid
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import react.freddy.com.ubid.R
+import react.freddy.com.ubid.databinding.UnbidFragmentBinding
+import react.freddy.com.ubid.util.InjectorUtils
 
 class UnbidFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = UnbidFragment()
-    }
+    private lateinit var binding: UnbidFragmentBinding
 
-    private lateinit var viewModel: UnbidViewModel
+    private val viewModel: UnbidViewModel by viewModels {
+        InjectorUtils.provideUnbidViewModelFactory(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.unbid_fragment, container, false)
+        binding = UnbidFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(UnbidViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        viewModel.setPageNumberValue(0)
+
+        viewModel.epicsEx.observe(viewLifecycleOwner, Observer { lists ->
+            if (lists.data != null){
+
+            }
+        })
     }
 
 }
