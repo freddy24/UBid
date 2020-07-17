@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.switchMap
+import com.google.gson.Gson
 import react.freddy.com.ubid.AppExecutors
 import react.freddy.com.ubid.api.ApiResponse
 import react.freddy.com.ubid.api.UBidService
@@ -12,6 +13,7 @@ import react.freddy.com.ubid.util.MD5Util
 import react.freddy.com.ubid.vo.EFSBaseResponse
 import react.freddy.com.ubid.vo.LoginInfo
 import react.freddy.com.ubid.vo.Resource
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -28,8 +30,12 @@ class LoginRepository(
     fun login(account: String, password: String): LiveData<Resource<LoginInfo>>{
         return object : NetworkBoundResource<LoginInfo,EFSBaseResponse<LoginInfo>>(appExecutors){
             override fun saveCallResult(item: EFSBaseResponse<LoginInfo>) {
-                if (item.data != null)
+                if (item.data != null){
                     loginInfoDao.insert(item.data)
+                    Timber.i("insert login info success")
+                    Timber.i("login info = ${Gson().toJson(item.data)}")
+                }
+
             }
 
             override fun shouldFetch(data: LoginInfo?): Boolean {

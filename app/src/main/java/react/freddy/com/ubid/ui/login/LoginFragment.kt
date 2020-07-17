@@ -26,6 +26,7 @@ import react.freddy.com.ubid.databinding.FragmentLoginBinding
 import react.freddy.com.ubid.ui.ShareViewModel
 import react.freddy.com.ubid.util.InjectorUtils
 import react.freddy.com.ubid.vo.Status
+import timber.log.Timber
 
 class LoginFragment : Fragment() {
 
@@ -108,14 +109,24 @@ class LoginFragment : Fragment() {
                 loadingProgressBar.visibility = View.GONE
                 Snackbar.make(binding.root, loginInfo.message.toString(), Snackbar.LENGTH_LONG).show()
             }else if (loginInfo.status == Status.SUCCESS){
+                //TODO 成功里面还要区分 业务success
                 loadingProgressBar.visibility = View.GONE
 
-                updateHeaderView(loginInfo.data!!.user.account, loginInfo.data.person.name)
+                if (loginInfo.data != null){
+                    updateHeaderView(loginInfo.data.user.account, loginInfo.data.person.name)
 
-                val mmkv = MMKV.defaultMMKV()
-                mmkv.encode("account", loginInfo.data.user.account)
+                    val mmkv = MMKV.defaultMMKV()
+                    mmkv.encode("account", loginInfo.data.user.account)
+                    mmkv.encode("token", loginInfo.data.token)
 
-                findNavController().navigateUp()
+                    val acc = mmkv.decodeString("account")
+                    val token = mmkv.decodeString("token")
+                    Timber.i("acc = $acc, token = $token")
+
+                    findNavController().navigateUp()
+                }
+
+
             }
         })
 

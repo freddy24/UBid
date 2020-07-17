@@ -21,15 +21,7 @@ sealed class ApiResponse<T> {
                  if (body == null || response.code() == 204){
                     return ApiEmptyResponse()
                 }else{
-                     val result =  body as EFSBaseResponse<T>
-                     val success = result.success
-                     val data = result.data
-                     if (success && data != null){
-                         return ApiSuccessResponse(body = body)
-                     }else{
-                         val err = result.err
-                         return ApiErrorResponse(err ?: "unknow error")
-                     }
+                     return ApiSuccessResponse(body = body)
                 }
             }else{
                 val msg = response.errorBody()?.toString()

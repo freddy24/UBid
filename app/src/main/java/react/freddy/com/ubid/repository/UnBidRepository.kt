@@ -3,6 +3,7 @@ package react.freddy.com.ubid.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
+import com.google.gson.Gson
 import react.freddy.com.ubid.AppExecutors
 import react.freddy.com.ubid.api.ApiResponse
 import react.freddy.com.ubid.api.UBidService
@@ -10,6 +11,7 @@ import react.freddy.com.ubid.db.AppDatabase
 import react.freddy.com.ubid.db.EpicsExDao
 import react.freddy.com.ubid.util.AbsentLiveData
 import react.freddy.com.ubid.vo.*
+import timber.log.Timber
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -36,6 +38,9 @@ class UnBidRepository(private val appExecutors: AppExecutors,
                 )
                 db.runInTransaction {
                     epicsExDao.insert(data.list)
+                    Timber.i("insert epicVo success")
+                    Timber.i("epicVo info = ${Gson().toJson(data.list)}")
+                    Timber.i("epic search result = ${Gson().toJson(epicSearchResult)}")
                     epicsExDao.insert(epicSearchResult)
                 }
             }
