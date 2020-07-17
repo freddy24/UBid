@@ -14,12 +14,11 @@ import java.util.*
 @Entity(
     primaryKeys = ["id"]
 )
-@TypeConverters(UBidConverters::class)
 data class EpicVo(
     @field:SerializedName("biddingDeadline")
-    val biddingDeadline: Calendar?,
+    val biddingDeadline: Long,
     @field:SerializedName("biddingStatus")
-    val biddingStatus: String,
+    val biddingStatus: String? = "",
     @field:SerializedName("epicName")
     val epicName: String,
     @field:SerializedName("id")

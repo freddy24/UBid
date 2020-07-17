@@ -1,5 +1,6 @@
 package react.freddy.com.ubid.api
 
+import com.tencent.mmkv.MMKV
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import react.freddy.com.ubid.data.BASE_ITMGR_URL
@@ -25,7 +26,14 @@ class AppRetrofit {
     }
 
     private fun initBuilder(): OkHttpClient.Builder{
+        val token: String? = MMKV.defaultMMKV().decodeString("token")
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val requestHeader = chain.request().newBuilder()
+                    .addHeader("X-Auth", token ?: "")
+                    .build()
+                chain.proceed(requestHeader)
+            }
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.addInterceptor(httpLoggingInterceptor)

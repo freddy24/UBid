@@ -18,13 +18,13 @@ class UBidConverters {
         timeInMillis = value
     }
 
-    @TypeConverter fun stringToIntList(data: String?): List<Int>?{
+    @TypeConverter fun stringToIntList(data: String?): List<Int>? {
         return data?.let {
-            it.split(",").map { value ->
+            it.split(",").map {
                 try {
-                    value.toInt()
-                }catch (e: NumberFormatException){
-                    Timber.e("cannot convert $value to number")
+                    it.toInt()
+                } catch (ex: NumberFormatException) {
+                    Timber.e(ex, "Cannot convert $it to number")
                     null
                 }
             }
@@ -32,6 +32,6 @@ class UBidConverters {
     }
 
     @TypeConverter fun intListToString(ints: List<Int>?): String?{
-        return ints?.joinToString { "," }
+        return ints?.joinToString ( "," )
     }
 }

@@ -14,7 +14,7 @@ class UnbidViewModel(private val unBidRepository: UnBidRepository) : ViewModel()
     val pageNumber: LiveData<Int> = _pageNumber
 
     val epicsEx: LiveData<Resource<List<EpicVo>>> = _pageNumber.switchMap {
-        unBidRepository.loadEpicsEx(it, 10, "Open")
+        unBidRepository.loadEpicsEx(it, 10, "Unbidding")
     }
 
     fun setPageNumberValue(pN: Int){
