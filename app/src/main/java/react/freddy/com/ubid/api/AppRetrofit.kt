@@ -24,7 +24,7 @@ class AppRetrofit {
             .build()
             .create(UBidService::class.java)
     }
-
+    //这种方法是静态改header 单例的ubid service没法做到登录之后 动态修改token，所以需要换成其它方式
     private fun initBuilder(): OkHttpClient.Builder{
         val token: String? = MMKV.defaultMMKV().decodeString("token")
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
@@ -52,5 +52,6 @@ class AppRetrofit {
                 }
             }
         }
+
     }
 }

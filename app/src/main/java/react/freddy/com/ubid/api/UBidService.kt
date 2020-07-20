@@ -2,10 +2,7 @@ package react.freddy.com.ubid.api
 
 import androidx.lifecycle.LiveData
 import react.freddy.com.ubid.vo.*
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 /**
  * data :2020/7/13
@@ -21,5 +18,5 @@ interface UBidService {
     fun getFunctions(@Path("userId") userId: String): LiveData<ApiResponse<EFSBaseResponse<List<FunctionVo>>>>
 
     @POST("itmgrbidding/v1/itmgr/bidding/getEpicsEx")
-    fun getEpicsEx(@Body param: HashMap<String, Any>): LiveData<ApiResponse<EpicExsResponse>>
+    fun getEpicsEx(@Header("X-Auth") token: String?, @Body param: HashMap<String, Any>): LiveData<ApiResponse<EpicExsResponse>>
 }

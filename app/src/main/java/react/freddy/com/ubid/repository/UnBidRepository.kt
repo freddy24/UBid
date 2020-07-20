@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import com.google.gson.Gson
+import com.tencent.mmkv.MMKV
 import react.freddy.com.ubid.AppExecutors
 import react.freddy.com.ubid.api.ApiResponse
 import react.freddy.com.ubid.api.UBidService
@@ -60,10 +61,14 @@ class UnBidRepository(private val appExecutors: AppExecutors,
             }
 
             override fun createCall(): LiveData<ApiResponse<EpicExsResponse>> {
+
+                val mmkv = MMKV.defaultMMKV();
+                val token: String? = mmkv.decodeString("token")
+
                 val params: HashMap<String, Any> = hashMapOf("pageNo" to pageNo,
                 "biddingStatus" to biddingStatus,
                 "pageSize" to pageSize)
-                return uBidService.getEpicsEx(params)
+                return uBidService.getEpicsEx(token, params)
             }
 
         }.asLiveData()
