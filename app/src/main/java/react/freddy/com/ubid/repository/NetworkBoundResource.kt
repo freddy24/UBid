@@ -6,10 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import react.freddy.com.ubid.AppExecutors
-import react.freddy.com.ubid.api.ApiEmptyResponse
-import react.freddy.com.ubid.api.ApiErrorResponse
-import react.freddy.com.ubid.api.ApiResponse
-import react.freddy.com.ubid.api.ApiSuccessResponse
+import react.freddy.com.ubid.api.*
+import react.freddy.com.ubid.vo.EFSBaseResponse
 import react.freddy.com.ubid.vo.Resource
 
 /**
@@ -60,11 +58,20 @@ abstract class NetworkBoundResource<ResultType, RequestType>
             when(response){
                 is ApiSuccessResponse -> {
                     appExecutors.diskIO().execute {
-                        saveCallResult(processResponse(response))
-                        appExecutors.mainThread().execute {
-                            result.addSource(loadFromDb(), Observer {newData ->
-                                setValue(newValue = Resource.success(newData))
-                            })
+                        val efsData = handleEFSResponse(response)
+                        if (efsData.success){
+                            saveCallResult(processResponse(response))
+                            appExecutors.mainThread().execute {
+                                result.addSource(loadFromDb(), Observer {newData ->
+                                    setValue(newValue = Resource.success(newData))
+                                })
+                            }
+                        }else{
+                            appExecutors.mainThread().execute {
+                                result.addSource(dbSource){ newData ->
+                                    setValue(Resource.error(efsData.err ?: "", newData))
+                                }
+                            }
                         }
                     }
                 }
@@ -105,5 +112,8 @@ abstract class NetworkBoundResource<ResultType, RequestType>
 
     @MainThread
     protected abstract fun createCall(): LiveData<ApiResponse<RequestType>>
+
+    @WorkerThread
+    protected abstract fun handleEFSResponse(response: ApiSuccessResponse<RequestType>): EFSData
 
 }

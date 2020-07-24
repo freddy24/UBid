@@ -109,9 +109,7 @@ class LoginFragment : Fragment() {
                 loadingProgressBar.visibility = View.GONE
                 Snackbar.make(binding.root, loginInfo.message.toString(), Snackbar.LENGTH_LONG).show()
             }else if (loginInfo.status == Status.SUCCESS){
-                //TODO 成功里面还要区分 业务success
                 loadingProgressBar.visibility = View.GONE
-
                 if (loginInfo.data != null){
                     updateHeaderView(loginInfo.data.user.account, loginInfo.data.person.name)
 
@@ -125,8 +123,6 @@ class LoginFragment : Fragment() {
 
                     findNavController().navigateUp()
                 }
-
-
             }
         })
 
