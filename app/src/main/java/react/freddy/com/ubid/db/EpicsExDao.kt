@@ -25,7 +25,7 @@ abstract class EpicsExDao {
     abstract fun insert(searchResult: EpicSearchResult)
 
     @Query("SELECT * FROM EpicSearchResult WHERE currentPage = :currentPage AND status = :status")
-    abstract fun getSearchResult(currentPage: Int, status: String): LiveData<EpicSearchResult>
+    abstract fun getSearchResult(currentPage: Int, status: String): LiveData<EpicSearchResult?>
 
     fun loadEpics(epicIds: List<Int>): LiveData<List<EpicVo>>{
         val order = SparseIntArray()

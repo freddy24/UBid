@@ -7,6 +7,8 @@ import androidx.lifecycle.switchMap
 import com.google.gson.Gson
 import react.freddy.com.ubid.AppExecutors
 import react.freddy.com.ubid.api.ApiResponse
+import react.freddy.com.ubid.api.ApiSuccessResponse
+import react.freddy.com.ubid.api.EFSData
 import react.freddy.com.ubid.api.UBidService
 import react.freddy.com.ubid.db.LoginInfoDao
 import react.freddy.com.ubid.util.MD5Util
@@ -50,6 +52,11 @@ class LoginRepository(
                 val md5Password = MD5Util.genMD5key(password)
                 val params = hashMapOf("account" to account, "password" to md5Password)
                 return uBidService.login(param = params)
+            }
+
+            override fun handleEFSResponse(response: ApiSuccessResponse<EFSBaseResponse<LoginInfo>>): EFSData {
+                val resData = response.body
+                return EFSData(resData.success, resData.err)
             }
 
         }.asLiveData()

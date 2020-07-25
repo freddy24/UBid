@@ -7,6 +7,8 @@ import com.google.gson.Gson
 import com.tencent.mmkv.MMKV
 import react.freddy.com.ubid.AppExecutors
 import react.freddy.com.ubid.api.ApiResponse
+import react.freddy.com.ubid.api.ApiSuccessResponse
+import react.freddy.com.ubid.api.EFSData
 import react.freddy.com.ubid.api.UBidService
 import react.freddy.com.ubid.db.AppDatabase
 import react.freddy.com.ubid.db.EpicsExDao
@@ -71,6 +73,21 @@ class UnBidRepository(private val appExecutors: AppExecutors,
                 return uBidService.getEpicsEx(token, params)
             }
 
+            override fun handleEFSResponse(response: ApiSuccessResponse<EpicExsResponse>): EFSData {
+                return EFSData(response.body.success, response.body.err)
+            }
+
         }.asLiveData()
+    }
+
+    fun getNextPage(query: String, next: Int): LiveData<Resource<Boolean>>{
+        val fetchBidNextPageTask = FetchBidNextPageTask(
+            query = query,
+            next = next,
+            uBidService = uBidService,
+            db = db
+        )
+        appExecutors.networkIO().execute(fetchBidNextPageTask)
+        return fetchBidNextPageTask.liveData
     }
 }
