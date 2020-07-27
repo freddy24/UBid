@@ -19,7 +19,7 @@ import react.freddy.com.ubid.workers.UBidDatabaseWorker
  * auth :wjp
  * Description :
  */
-@Database(entities = [LoginInfo::class, EpicVo::class, EpicSearchResult::class], version = 2, exportSchema = false)
+@Database(entities = [LoginInfo::class, EpicVo::class, EpicSearchResult::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
 
     abstract fun loginInfoDao(): LoginInfoDao
@@ -46,13 +46,19 @@ abstract class AppDatabase : RoomDatabase(){
                 database.execSQL("DROP TABLE EpicVo")
                 database.execSQL("ALTER TABLE EpicVoTemp RENAME TO EpicVo")
             }
+        }
 
+        private val MIGRATION_2_3: Migration = object : Migration(2, 3){
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE EpicSearchResult ADD COLUMN last INTEGER NOT NULL")
+            }
         }
 
         private fun buildDatabase(context: Context) : AppDatabase{
 
             return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
                 .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
                 .addCallback(object : RoomDatabase.Callback(){
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)

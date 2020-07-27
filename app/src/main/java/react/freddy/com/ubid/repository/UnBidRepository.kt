@@ -37,7 +37,8 @@ class UnBidRepository(private val appExecutors: AppExecutors,
                     epicIds = epicIds,
                     totalCount = data.list.size,
                     currentPage = pageNo,
-                    status = biddingStatus
+                    status = biddingStatus,
+                    last = item.data.pager.last
                 )
                 db.runInTransaction {
                     epicsExDao.insert(data.list)
@@ -68,22 +69,21 @@ class UnBidRepository(private val appExecutors: AppExecutors,
                 val token: String? = mmkv.decodeString("token")
 
                 val params: HashMap<String, Any> = hashMapOf("pageNo" to pageNo,
-                "biddingStatus" to biddingStatus,
-                "pageSize" to pageSize)
+                    "biddingStatus" to biddingStatus,
+                    "pageSize" to pageSize)
                 return uBidService.getEpicsEx(token, params)
             }
 
             override fun handleEFSResponse(response: ApiSuccessResponse<EpicExsResponse>): EFSData {
                 return EFSData(response.body.success, response.body.err)
             }
-
         }.asLiveData()
     }
 
     fun getNextPage(query: String, next: Int): LiveData<Resource<Boolean>>{
         val fetchBidNextPageTask = FetchBidNextPageTask(
             query = query,
-            next = next,
+            pageNumber = next,
             uBidService = uBidService,
             db = db
         )

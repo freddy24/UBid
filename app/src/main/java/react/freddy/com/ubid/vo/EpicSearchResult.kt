@@ -16,5 +16,6 @@ data class EpicSearchResult(
     val epicIds: List<Int>,
     val totalCount: Int,
     val currentPage: Int,
-    val status: String?
+    val status: String?,
+    val last: Boolean
 )
