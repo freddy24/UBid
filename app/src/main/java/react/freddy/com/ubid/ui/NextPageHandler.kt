@@ -16,7 +16,7 @@ class NextPageHandler(private val unBidRepository: UnBidRepository) : Observer<R
 
     private var nextPageLiveData: LiveData<Resource<Boolean>>? = null
     val loadMoreState = MutableLiveData<LoadMoreState>()
-    private var query: String? = null
+    private var pageNumber: Int? = null
     private var _hasMore: Boolean = false
     val hasMore
         get() = _hasMore
@@ -25,14 +25,14 @@ class NextPageHandler(private val unBidRepository: UnBidRepository) : Observer<R
         reset()
     }
 
-    fun queryNextPage(query: String){
-        if (this.query == query){
+    fun queryNextPage(query: String, pageNumber: Int){
+        if (this.pageNumber == pageNumber){
             return
         }
 
         unregister()
-        this.query = query
-//        nextPageLiveData = unBidRepository.
+        this.pageNumber = pageNumber
+        nextPageLiveData = unBidRepository.getNextPage(query, pageNumber)
         loadMoreState.value = LoadMoreState(
             isRunning = true,
             errorMessage = null
@@ -73,7 +73,7 @@ class NextPageHandler(private val unBidRepository: UnBidRepository) : Observer<R
         nextPageLiveData?.removeObserver(this)
         nextPageLiveData = null
         if (_hasMore){
-            query = null
+            pageNumber = null
         }
     }
 

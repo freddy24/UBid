@@ -20,7 +20,9 @@ sealed class ApiResponse<T> {
                 val body = response.body()
                  if (body == null || response.code() == 204){
                     return ApiEmptyResponse()
-                }else{
+                }else if (response.code() == 401){
+                     return ApiErrorResponse("unAuth")
+                 }else{
                      return ApiSuccessResponse(body = body)
                 }
             }else{

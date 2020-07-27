@@ -115,5 +115,4 @@ abstract class NetworkBoundResource<ResultType, RequestType>
 
     @WorkerThread
     protected abstract fun handleEFSResponse(response: ApiSuccessResponse<RequestType>): EFSData
-
 }

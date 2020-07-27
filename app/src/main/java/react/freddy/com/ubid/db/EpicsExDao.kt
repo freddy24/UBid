@@ -41,4 +41,7 @@ abstract class EpicsExDao {
 
     @Query("SELECT * FROM EpicVo WHERE id in (:epicIds)")
     protected abstract fun loadEpicById(epicIds: List<Int>): LiveData<List<EpicVo>>
+
+    @Query("SELECT * FROM EpicSearchResult WHERE currentPage = :currentPage AND status = :status")
+    abstract fun findSearchResult(currentPage: Int, status: String): EpicSearchResult?
 }

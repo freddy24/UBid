@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -20,7 +21,7 @@ class UnbidFragment : Fragment() {
 
     private lateinit var binding: UnbidFragmentBinding
 
-    val adapter by autoCleared<BidAdapter>()
+    var adapter by autoCleared<BidAdapter>()
 
     private val viewModel: UnbidViewModel by viewModels {
         InjectorUtils.provideUnbidViewModelFactory(requireContext())
@@ -37,28 +38,45 @@ class UnbidFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        binding.bidList.adapter = adapter
+        val bidAdapter = BidAdapter()
+        binding.bidList.adapter = bidAdapter
+        adapter = bidAdapter
 
-        viewModel.setPageNumberValue(1)
+        viewModel.setQueryConditions(UnbidViewModel.QueryCondition("Unbidding", 1))
 
-        viewModel.epicsEx.observe(viewLifecycleOwner, Observer { lists ->
+        viewModel.epics.observe(viewLifecycleOwner, Observer { lists ->
             if(lists.status == Status.ERROR){
-                Snackbar.make(binding.root, lists.message ?: "", Snackbar.LENGTH_SHORT).show()
+                val errorMessage = lists.message
+                if (!errorMessage.isNullOrEmpty() && errorMessage == "unAuth"){
+                    //跳转登录
+                    findNavController().navigate(R.id.action_unbidFragment_to_login_fragment)
+                }else{
+                    Snackbar.make(binding.root, lists.message ?: "", Snackbar.LENGTH_SHORT).show()
+                }
             }else{
                 if (lists.data != null){
                     adapter.submitList(lists.data)
                 }
             }
         })
+
+        viewModel.loadMoreState.observe(viewLifecycleOwner, Observer { loadingMore ->
+            if (loadingMore == null){
+
+            }else{
+
+            }
+        })
     }
 
-    fun initRecyclerView(){
+    private fun initRecyclerView(){
         binding.bidList.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val lastPosition = layoutManager.findLastVisibleItemPosition()
                 if (lastPosition == adapter.itemCount - 1){
-                    //load more
+                    //load more, cannot reuse setPageNumber
+                    viewModel.loadMorePage()
                 }
             }
         })
