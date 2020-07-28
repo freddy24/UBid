@@ -22,7 +22,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>
 
     init {
         result.value = Resource.loading(null)
-
+        @Suppress("LeakingThis")
         val dbSource = loadFromDb()
 
         result.addSource(dbSource, Observer { data ->

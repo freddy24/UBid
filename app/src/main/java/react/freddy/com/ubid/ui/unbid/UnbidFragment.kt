@@ -42,31 +42,34 @@ class UnbidFragment : Fragment() {
         binding.bidList.adapter = bidAdapter
         adapter = bidAdapter
 
-        viewModel.setQueryConditions(UnbidViewModel.QueryCondition("Unbidding", 1))
+
 
         viewModel.epics.observe(viewLifecycleOwner, Observer { lists ->
             if(lists.status == Status.ERROR){
                 val errorMessage = lists.message
                 if (!errorMessage.isNullOrEmpty() && errorMessage == "unAuth"){
                     //跳转登录
-                    findNavController().navigate(R.id.action_unbidFragment_to_login_fragment)
+                    findNavController().navigate(R.id.action_nav_home_to_login_fragment)
                 }else{
                     Snackbar.make(binding.root, lists.message ?: "", Snackbar.LENGTH_SHORT).show()
                 }
             }else{
-                if (lists.data != null){
-                    adapter.submitList(lists.data)
-                }
+                adapter.submitList(lists?.data)
             }
         })
 
         viewModel.loadMoreState.observe(viewLifecycleOwner, Observer { loadingMore ->
             if (loadingMore == null){
-
+                binding.loadingMore = false
             }else{
-
+                binding.loadingMore = loadingMore.isRunning
             }
         })
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.setQueryConditions("Unbidding", 1)
     }
 
     private fun initRecyclerView(){

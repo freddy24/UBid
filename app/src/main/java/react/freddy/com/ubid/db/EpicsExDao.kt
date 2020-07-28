@@ -19,7 +19,7 @@ import react.freddy.com.ubid.vo.EpicVo
 abstract class EpicsExDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(ex: List<EpicVo>)
+    abstract fun insertEpicVos(ex: List<EpicVo>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(searchResult: EpicSearchResult)

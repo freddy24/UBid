@@ -62,7 +62,7 @@ class FetchBidNextPageTask constructor(
                     )
                     db.runInTransaction {
                         db.epicsExDao().insert(merged)
-                        db.epicsExDao().insert(apiResponse.body.data.list)
+                        db.epicsExDao().insertEpicVos(apiResponse.body.data.list)
                     }
                     Resource.success(!apiResponse.body.data.pager.last)
                 }

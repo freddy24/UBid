@@ -38,10 +38,10 @@ class UnBidRepository(private val appExecutors: AppExecutors,
                     totalCount = data.list.size,
                     currentPage = pageNo,
                     status = biddingStatus,
-                    last = item.data.pager.last
+                    last = data.pager.last
                 )
                 db.runInTransaction {
-                    epicsExDao.insert(data.list)
+                    epicsExDao.insertEpicVos(data.list)
                     Timber.i("insert epicVo success")
                     Timber.i("epicVo info = ${Gson().toJson(data.list)}")
                     Timber.i("epic search result = ${Gson().toJson(epicSearchResult)}")
@@ -50,7 +50,7 @@ class UnBidRepository(private val appExecutors: AppExecutors,
             }
 
             override fun shouldFetch(data: List<EpicVo>?): Boolean {
-                return data == null
+                return true
             }
 
             override fun loadFromDb(): LiveData<List<EpicVo>> {
@@ -63,6 +63,10 @@ class UnBidRepository(private val appExecutors: AppExecutors,
                 }
             }
 
+            override fun handleEFSResponse(response: ApiSuccessResponse<EpicExsResponse>): EFSData {
+                return EFSData(response.body.success, response.body.err)
+            }
+
             override fun createCall(): LiveData<ApiResponse<EpicExsResponse>> {
 
                 val mmkv = MMKV.defaultMMKV();
@@ -72,10 +76,6 @@ class UnBidRepository(private val appExecutors: AppExecutors,
                     "biddingStatus" to biddingStatus,
                     "pageSize" to pageSize)
                 return uBidService.getEpicsEx(token, params)
-            }
-
-            override fun handleEFSResponse(response: ApiSuccessResponse<EpicExsResponse>): EFSData {
-                return EFSData(response.body.success, response.body.err)
             }
         }.asLiveData()
     }

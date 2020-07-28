@@ -26,20 +26,29 @@ class UnbidViewModel(private val unBidRepository: UnBidRepository) : ViewModel()
     }
 
     val epics: LiveData<Resource<List<EpicVo>>> = _queryCondition.switchMap {
-        it.ifExist{
-            type, pageNumber -> unBidRepository.loadEpicsEx(pageNumber, 10, type)
+        it.ifExist { type, pageNumber ->
+            if (type.isBlank() || pageNumber == 0) {
+                AbsentLiveData.create()
+            } else {
+                unBidRepository.loadEpicsEx(pageNumber, 10, type)
+            }
         }
     }
 
-    fun setPageNumberValue(pN: Int){
+    fun setPageNumberValue(pN: Int) {
         _pageNumber.value = pN
     }
 
-    fun setQueryConditions(queryCondition: QueryCondition){
-        _queryCondition.value = queryCondition
+    fun setQueryConditions(type: String, pageNumber: Int) {
+        val con = QueryCondition(type, pageNumber)
+        if (_queryCondition.value == con) {
+            return
+        }
+        nextPageHandler.reset()
+        _queryCondition.value = con
     }
 
-    fun loadMorePage(){
+    fun loadMorePage() {
         _queryCondition.value?.let {
             nextPageHandler.queryNextPage(it.type, it.pageNumber)
         }
@@ -48,11 +57,11 @@ class UnbidViewModel(private val unBidRepository: UnBidRepository) : ViewModel()
     val loadMoreState: LiveData<LoadMoreState>
         get() = nextPageHandler.loadMoreState
 
-    data class QueryCondition(val type: String, val pageNumber: Int){
-        fun <T> ifExist(u: (String, Int) -> LiveData<T>): LiveData<T>{
-            return if (type.isBlank() || pageNumber == 0){
+    data class QueryCondition(val type: String, val pageNumber: Int) {
+        fun <T> ifExist(u: (String, Int) -> LiveData<T>): LiveData<T> {
+            return if (type.isBlank() || pageNumber == 0) {
                 AbsentLiveData.create()
-            }else{
+            } else {
                 u(type, pageNumber)
             }
         }
