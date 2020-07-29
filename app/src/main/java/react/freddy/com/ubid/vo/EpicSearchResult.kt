@@ -9,13 +9,13 @@ import androidx.room.TypeConverters
  * Description :
  */
 @Entity(
-    primaryKeys = ["currentPage"]
+    primaryKeys = ["status"]
 )
 @TypeConverters(UBidConverters::class)
 data class EpicSearchResult(
     val epicIds: List<Int>,
     val totalCount: Int,
     val currentPage: Int,
-    val status: String?,
+    val status: String,
     val last: Boolean
 )

@@ -24,8 +24,8 @@ abstract class EpicsExDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(searchResult: EpicSearchResult)
 
-    @Query("SELECT * FROM EpicSearchResult WHERE currentPage = :currentPage AND status = :status")
-    abstract fun getSearchResult(currentPage: Int, status: String): LiveData<EpicSearchResult?>
+    @Query("SELECT * FROM EpicSearchResult WHERE status = :status")
+    abstract fun getSearchResult(status: String): LiveData<EpicSearchResult?>
 
     fun loadEpics(epicIds: List<Int>): LiveData<List<EpicVo>>{
         val order = SparseIntArray()
@@ -42,6 +42,6 @@ abstract class EpicsExDao {
     @Query("SELECT * FROM EpicVo WHERE id in (:epicIds)")
     protected abstract fun loadEpicById(epicIds: List<Int>): LiveData<List<EpicVo>>
 
-    @Query("SELECT * FROM EpicSearchResult WHERE currentPage = :currentPage AND status = :status")
-    abstract fun findSearchResult(currentPage: Int, status: String): EpicSearchResult?
+    @Query("SELECT * FROM EpicSearchResult WHERE status = :status")
+    abstract fun findSearchResult(status: String): EpicSearchResult?
 }
