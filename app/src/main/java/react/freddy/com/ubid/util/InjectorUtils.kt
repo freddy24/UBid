@@ -7,6 +7,7 @@ import react.freddy.com.ubid.db.AppDatabase
 import react.freddy.com.ubid.repository.UnBidRepository
 import react.freddy.com.ubid.repository.LoginRepository
 import react.freddy.com.ubid.ui.ShareViewModelFactory
+import react.freddy.com.ubid.ui.biding.BidingViewModelFactory
 import react.freddy.com.ubid.ui.unbid.UnbindViewModelFactory
 import react.freddy.com.ubid.ui.login.LoginViewModelFactory
 
@@ -42,5 +43,9 @@ object InjectorUtils {
         return UnbindViewModelFactory(
             getHomeRepository(context)
         )
+    }
+
+    fun provideBidingViewModelFactory(context: Context): BidingViewModelFactory{
+        return BidingViewModelFactory(getHomeRepository(context))
     }
 }

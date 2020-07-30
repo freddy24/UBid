@@ -1,15 +1,14 @@
-package react.freddy.com.ubid.ui.unbid
+package react.freddy.com.ubid.ui.biding
 
 import androidx.lifecycle.*
 import react.freddy.com.ubid.repository.UnBidRepository
 import react.freddy.com.ubid.ui.LoadMoreState
 import react.freddy.com.ubid.ui.NextPageHandler
 import react.freddy.com.ubid.util.AbsentLiveData
-import react.freddy.com.ubid.util.Event
 import react.freddy.com.ubid.vo.EpicVo
 import react.freddy.com.ubid.vo.Resource
 
-class UnbidViewModel(private val unBidRepository: UnBidRepository) : ViewModel() {
+class BidingViewModel(private val unBidRepository: UnBidRepository) : ViewModel() {
 
     private val _pageNumber = MutableLiveData<Int>()
     val pageNumber: LiveData<Int> = _pageNumber
@@ -19,9 +18,6 @@ class UnbidViewModel(private val unBidRepository: UnBidRepository) : ViewModel()
 
     private val nextPageHandler = NextPageHandler(unBidRepository)
 
-    val epicsEx: LiveData<Resource<List<EpicVo>>> = _pageNumber.switchMap {
-        unBidRepository.loadEpicsEx(it, 10, "Unbidding")
-    }
 
     val epics: LiveData<Resource<List<EpicVo>>> = _queryCondition.switchMap {
         it.ifExist { type, pageNumber ->
@@ -31,16 +27,6 @@ class UnbidViewModel(private val unBidRepository: UnBidRepository) : ViewModel()
                 unBidRepository.loadEpicsEx(pageNumber, 10, type)
             }
         }
-    }
-
-    val isLogin: LiveData<Event<Boolean>> = epics.map { result ->
-        var isLogin = false
-        isLogin = result.message != "unAuth"
-        Event(isLogin)
-    }
-
-    fun setPageNumberValue(pN: Int) {
-        _pageNumber.value = pN
     }
 
     fun setQueryConditions(type: String, pageNumber: Int) {

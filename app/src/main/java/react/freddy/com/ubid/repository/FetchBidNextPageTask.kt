@@ -16,7 +16,6 @@ import java.io.IOException
  */
 class FetchBidNextPageTask constructor(
     private val query: String,
-    private val pageNumber: Int,
     private val uBidService: UBidService,
     private val db: AppDatabase
 ) : Runnable{
@@ -25,12 +24,12 @@ class FetchBidNextPageTask constructor(
     val liveData: LiveData<Resource<Boolean>> = _liveData
 
     override fun run() {
-        val current = db.epicsExDao().findSearchResult(pageNumber, query)
+        val current = db.epicsExDao().findSearchResult(query)
         if (current == null){
             _liveData.postValue(null)
             return
         }
-        val nexPage = pageNumber + 1
+        val nexPage = current.currentPage + 1
         val last = current.last
         if (last){
             _liveData.postValue(Resource.success(false))
@@ -56,7 +55,7 @@ class FetchBidNextPageTask constructor(
                     val merged = EpicSearchResult(
                         epicIds = ids,
                         totalCount = ids.size,
-                        currentPage = apiResponse.body.data.pager.pageNumber,
+                        currentPage = nexPage,
                         status = query,
                         last = apiResponse.body.data.pager.last
                     )

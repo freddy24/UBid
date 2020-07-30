@@ -17,6 +17,7 @@ import react.freddy.com.ubid.R
 import react.freddy.com.ubid.databinding.FragmentViewPagerHomeBinding
 import react.freddy.com.ubid.ui.ShareViewModel
 import react.freddy.com.ubid.util.InjectorUtils
+import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
@@ -29,6 +30,7 @@ class HomeFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        Timber.i("HomeFragment onCreateView")
         val binding = FragmentViewPagerHomeBinding.inflate(inflater, container, false)
         binding.viewPager.adapter = HomePagerAdapter(this)
 

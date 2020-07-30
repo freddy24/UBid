@@ -1,75 +1,52 @@
-package react.freddy.com.ubid.ui.unbid
+package react.freddy.com.ubid.ui.biding
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.unbid_fragment.view.*
 import react.freddy.com.ubid.R
-import react.freddy.com.ubid.databinding.UnbidFragmentBinding
+import react.freddy.com.ubid.databinding.BidingFragmentBinding
+import react.freddy.com.ubid.ui.unbid.BidAdapter
+import react.freddy.com.ubid.ui.unbid.UnbidViewModel
 import react.freddy.com.ubid.util.InjectorUtils
 import react.freddy.com.ubid.util.autoCleared
-import react.freddy.com.ubid.vo.Status
 import timber.log.Timber
 
-class UnbidFragment : Fragment() {
+class BidingFragment : Fragment() {
 
-    var binding by autoCleared<UnbidFragmentBinding>()
+    var binding by autoCleared<BidingFragmentBinding>()
 
     var adapter by autoCleared<BidAdapter>()
 
-    private val viewModel: UnbidViewModel by viewModels {
-        InjectorUtils.provideUnbidViewModelFactory(requireContext())
+    private val viewModel: BidingViewModel by viewModels {
+        InjectorUtils.provideBidingViewModelFactory(requireContext())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate<UnbidFragmentBinding>(inflater, R.layout.unbid_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.biding_fragment, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.i("onViewCreated")
-
         binding.lifecycleOwner = viewLifecycleOwner
         initRecyclerView()
         val bidAdapter = BidAdapter()
         binding.bidList.adapter = bidAdapter
         adapter = bidAdapter
 
-        Timber.i("binding = $binding fragment = $this")
-
         viewModel.epics.observe(viewLifecycleOwner, Observer { lists ->
             Timber.i("epics observe")
-            if(lists.status == Status.ERROR){
-                Timber.i("epics observe on error")
-                val errorMessage = lists.message
-                Toast.makeText(requireContext(), errorMessage ?: "", Toast.LENGTH_SHORT).show()
-//                Snackbar.make(binding.bidList, errorMessage ?: "", Snackbar.LENGTH_SHORT).show()
-            }else{
-                adapter.submitList(lists?.data)
-            }
-        })
-
-        viewModel.isLogin.observe(viewLifecycleOwner, Observer {
-           it.getContentIfNotHandled()?.let { isLogin ->
-               if (!isLogin){
-                   //跳转登录
-//                   findNavController().navigate(R.id.login_fragment)
-               }
-           }
+            adapter.submitList(lists?.data)
         })
 
         viewModel.loadMoreState.observe(viewLifecycleOwner, Observer { loadingMore ->
@@ -80,7 +57,7 @@ class UnbidFragment : Fragment() {
             }
         })
 
-        viewModel.setQueryConditions("Unbidding", 1)
+        viewModel.setQueryConditions("Open", 1)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -100,4 +77,5 @@ class UnbidFragment : Fragment() {
             }
         })
     }
+
 }

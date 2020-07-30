@@ -54,7 +54,7 @@ class UnBidRepository(private val appExecutors: AppExecutors,
             }
 
             override fun loadFromDb(): LiveData<List<EpicVo>> {
-                return epicsExDao.getSearchResult(pageNo, biddingStatus).switchMap { searchData ->
+                return epicsExDao.getSearchResult(biddingStatus).switchMap { searchData ->
                     if (searchData == null){
                         AbsentLiveData.create()
                     }else{
@@ -83,7 +83,6 @@ class UnBidRepository(private val appExecutors: AppExecutors,
     fun getNextPage(query: String, next: Int): LiveData<Resource<Boolean>>{
         val fetchBidNextPageTask = FetchBidNextPageTask(
             query = query,
-            pageNumber = next,
             uBidService = uBidService,
             db = db
         )

@@ -24,9 +24,9 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:spanCount="1"
+            tools:itemCount="1"
             tools:context="com.google.samples.apps.sunflower.GardenActivity"
             tools:listitem="@layout/bid_list_item"
-            tools:itemCount="1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/load_more_bar"/>
 
