@@ -90,6 +90,7 @@ class LoginFragment : Fragment() {
             }
         }
         usernameEditText.addTextChangedListener(afterTextChangedListener)
+        passwordEditText.addTextChangedListener(afterTextChangedListener)
 
 
         loginButton.setOnClickListener {
