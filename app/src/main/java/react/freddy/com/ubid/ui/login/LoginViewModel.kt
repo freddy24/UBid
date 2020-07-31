@@ -1,16 +1,13 @@
 package react.freddy.com.ubid.ui.login
 
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
 import androidx.lifecycle.switchMap
-import kotlinx.coroutines.withContext
-
 import react.freddy.com.ubid.R
 import react.freddy.com.ubid.repository.LoginRepository
 import react.freddy.com.ubid.util.AbsentLiveData
-import react.freddy.com.ubid.vo.EFSBaseResponse
 import react.freddy.com.ubid.vo.LoginInfo
 import react.freddy.com.ubid.vo.Resource
 import react.freddy.com.ubid.vo.Status
